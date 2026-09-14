@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import portfolioData from '../portfolio.json';
+import { portfolioData } from './portfolio';
 
 interface NavItem {
   id: string;
@@ -328,7 +328,7 @@ export default function Home() {
       nav: [{ id: 'home', label: '홈', path: '#home' }, { id: 'about', label: '소개', path: '#about' }, { id: 'portfolio', label: '포트폴리오', path: '#portfolio' }, { id: 'contact', label: '연락처', path: '#contact' }] as NavItem[],
       student: "경영학 학사 과정 학생", tagline: "운영 및 관리 관리의 무결성, 리더십 및 전문성.", bio: "조직 리더십, 재무 관리 및 팀 운영에 입증된 실적을 보유한 파순단 대학교 경영학 학생.", explore: "포트폴리오 탐색", cv: "이력서 다운로드 📄", card: "디지털 명함", search: "문서, 인증서 검색...", contactHeader: "연락주세요", aiGreeting: "안녕하세요! 사룰 AI 어시스턴트입니다.", metrics: ["조직 경험 연수", "관리된 프로젝트", "헌신과 무결성", "활성 학년도"], educationTitle: "교육", experienceTitle: "경험", skillsExpertise: "기술 및 전문성", techSkills: "기술적 인 기술", nonTechSkills: "비 기술적 기술", portfolioHeader: "포트폴리오", tabs: { documents: "문서", certificates: "인증서", videos: "비디오", skills: "기술" }, docLabel: "공식 문서", ratingTitle: "이 포트폴리오 평가", reactionsTitle: "방문자 반응", reactionsSub: "이모티콘을 클릭하여 반응하세요!", contactFormTitle: "메시지 보내기", contactFormSub: "이메일로 직접 메시지를 보내주세요!", nameLabel: "당신의 이름", emailLabel: "귀하의 이메일", messageLabel: "귀하의 메시지", sendForm: "이메일로 보내기 🚀", sendWhatsapp: "WhatsApp을 통해 보내기 ↗", successMessage: "이메일로 성공적으로 전송되었습니다! 감사합니다.", commentsTitle: "코멘트", findMe: "나를 찾아라", pomodoroTitle: "포커스 타이머", pomodoroSub: "관리 포커스 모드", startTimer: "시작", pauseTimer: "일시 중지", resetTimer: "초기화",
       education: [{ institution: "파순단 대학교", major: "경영학 (NIM: 244010166)", period: "2024 - 현재" }, { institution: "SMAIT 알-물타잠", major: "사회 과학", period: "2021 - 2024" }] as EducationItem[],
-      experience: [{ title: "모스크 번영 및 서비스 장관", desc: "사무국 관리, 공식 서신 및 아카이브 보고서를 처리합니다.", period: "2025 - 2026" }, { title: "라마단 행사 최고 경영자", desc: "행사의 주요 책임자.", period: "2025년 2월-3월" }, { title: "재무 이사", desc: "재무 운영 관리.", period: "2025년 10월-12월" }] as ExperienceItem[],
+      experience: [{ title: "모스크 번영 및 서비스 장관", desc: "사무국 관리, 공식 서신 및 아카이브 보고서를 처리합니다.", period: "2025 - 2026" }, { title: "라마단 행사 최고 경영자", desc: "행사의 주요 책임자.", period: "2025년 2월-3월" }, { title: "재무 이사", desc: "재무 운영 관리.", period: "2025년 10월-12月" }] as ExperienceItem[],
       skillsData: { technical: ["Microsoft Office (관리, 보관)", "CapCut & Canva (디자인)"], nonTechnical: ["리더シップ", "문제 해결", "시간 관리"] },
       photosList: [
         { title: "파순단 대학교 캠퍼스 활동", category: "파순단 대학교", image: "/photo-1.jpg" },
@@ -384,7 +384,7 @@ export default function Home() {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer: any;
     if (isTimerRunning && timeLeft > 0) {
       timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
     } else if (timeLeft === 0) { setIsTimerRunning(false); }
@@ -487,14 +487,13 @@ export default function Home() {
   const [nameInput, setNameInput] = useState(''); const [commentInput, setCommentInput] = useState('');
   useEffect(() => { localStorage.setItem('sahrul_portfolio_comments', JSON.stringify(comments)); }, [comments]);
 
-  const handleAddComment = (e: React.FormEvent) => {
+  const handleAddComment = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); if (!nameInput.trim() || !commentInput.trim()) return;
     triggerConfetti(); playSound('click');
     setComments([{ name: nameInput, comment: commentInput, time: t.timeAgo }, ...comments]);
     setNameInput(''); setCommentInput('');
   };
 
-  // FormSubmit Connected Contact Form
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!contactName.trim() || !contactEmail.trim() || !contactMessage.trim()) return;
@@ -528,7 +527,7 @@ export default function Home() {
     }
   };
 
-  const handleAiSubmit = (e: React.FormEvent) => {
+  const handleAiSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); if (!aiInput.trim()) return;
     const userQuery = aiInput.trim(); setAiChatLog([...aiChatLog, { sender: 'user', text: userQuery }]); setAiInput(''); playSound('click');
     setTimeout(() => {
@@ -617,7 +616,7 @@ export default function Home() {
     render(); return () => { window.removeEventListener('resize', handleResize); cancelAnimationFrame(animationFrameId); };
   }, [loading, accentTheme, cursorPos]);
 
-  const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleCardMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left; const y = e.clientY - rect.top;
     e.currentTarget.style.setProperty('--mouse-x', `${x}px`); e.currentTarget.style.setProperty('--mouse-y', `${y}px`);
@@ -625,7 +624,7 @@ export default function Home() {
     const rotateX = ((y - centerY) / centerY) * -4; const rotateY = ((x - centerX) / centerX) * 4;
     e.currentTarget.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
   };
-  const handleCardMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleCardMouseLeave = (e: React.MouseEvent<HTMLElement>) => {
     e.currentTarget.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
   };
 
@@ -676,26 +675,6 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#020617] text-slate-100 font-sans selection:bg-blue-500 selection:text-white pb-32 relative overflow-x-hidden">
-      
-      <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; cursor: default; }
-        a, button, input, textarea, iframe { cursor: pointer; }
-        
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #020617; }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; border: 2px solid #020617; }
-        ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
-
-        .spotlight-card { position: relative; overflow: hidden; transition: transform 0.2s ease-out; }
-        .spotlight-card::before {
-          content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-          background: radial-gradient(700px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255,255,255, 0.08), transparent 40%);
-          opacity: 0; transition: opacity 0.3s ease; pointer-events: none; z-index: 2;
-        }
-        .spotlight-card:hover::before { opacity: 1; }
-      `}</style>
-
       <canvas ref={confettiCanvasRef} className="fixed inset-0 pointer-events-none z-[999999]"></canvas>
       <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0"></canvas>
       <div className="fixed pointer-events-none z-[99999] w-8 h-8 rounded-full border border-white/20 bg-white/5 transition-transform duration-75 ease-out -translate-x-1/2 -translate-y-1/2 hidden md:block backdrop-blur-[1px]" style={{ left: `${cursorPos.x}px`, top: `${cursorPos.y}px` }}></div>
@@ -763,7 +742,7 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <form onSubmit={(e) => { e.preventDefault(); handleAiSubmit(e); }} className="p-3 bg-zinc-900/80 border-t border-white/10 flex gap-2">
+            <form onSubmit={handleAiSubmit} className="p-3 bg-zinc-900/80 border-t border-white/10 flex gap-2">
               <input type="text" value={aiInput} onChange={(e) => setAiInput(e.target.value)} placeholder="..." className="w-full bg-zinc-950 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500 font-mono shadow-inner" />
               <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-xl text-xs font-bold font-mono">Kirim</button>
             </form>
